@@ -59,7 +59,7 @@ public class Board {
     }
 
     private void validatePawn(Movement movement, Piece targetPiece) {
-        if (targetPiece.isEmpty() && movement.isVerticalMove() || movement.isDiagonal()) {
+        if (targetPiece.isEmpty() && movement.isVerticalMove() || !targetPiece.isEmpty() && movement.isDiagonal()) {
             return;
         }
         throw new IllegalArgumentException("올바르지 않은 움직임");
