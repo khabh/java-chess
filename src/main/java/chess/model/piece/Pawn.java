@@ -1,60 +1,52 @@
 package chess.model.piece;
 
 public class Pawn extends Piece {
-    private static final int START_JUMP_GAP = 2;
+    private static final Piece BLACK_PAWN = new Pawn(Color.BLACK, 1, 2);
+    private static final Piece WHITE_PAWN = new Pawn(Color.WHITE, -1, 7);
+    private static final int START_JUMP_DISTANCE = 2;
+    private static final int COMMON_RANK_DISTANCE = 1;
 
-    private final int moveDirection;
+    private final int validRankDirection;
     private final int startRank;
 
-    private Pawn(Color color, int moveDirection, int startRank) {
+    private Pawn(Color color, int validRankDirection, int startRank) {
         super(color, Type.PAWN);
-        this.moveDirection = moveDirection;
+        this.validRankDirection = validRankDirection;
         this.startRank = startRank;
     }
 
-    public static Pawn createBlackPawn() {
-        return new Pawn(Color.BLACK, 1, 2);
-    }
-
-    public static Pawn createWhitePawn() {
-        return new Pawn(Color.WHITE, -1, 7);
+    public static Piece from(Color color) {
+        if (Color.BLACK == color) {
+            return BLACK_PAWN;
+        }
+        return WHITE_PAWN;
     }
 
     @Override
-    void validateMovement(Movement movement, Piece target) {
-        validateDirection(movement);
+    public boolean isValid(Movement movement) {
+        if (!isValidDirection(movement)) {
+            return false;
+        }
         if (movement.isDiagonal()) {
-            validateDiagonal(movement, target);
-            return;
+            return movement.getRankDistance() == COMMON_RANK_DISTANCE;
         }
-        if (isValidVerticalMove(movement, target)) {
-            throw new IllegalArgumentException("올바르지 않은 폰의 이동");
-        }
+        return isValidVerticalMove(movement);
     }
 
-    private void validateDiagonal(Movement movement, Piece target) {
-        if (target.isEmpty()) {
-            throw new IllegalArgumentException("폰은 상대 기물이 있을 때만 대각선 이동이 가능");
-        }
-        if (movement.getFileGap() != 1) {
-            throw new IllegalArgumentException("폰은 대각선으로 한 칸만 움직일 수 있음");
-        }
+    private boolean isValidDirection(Movement movement) {
+        int movementRankDirection = Integer.signum(movement.getRankGap());
+        return movementRankDirection == validRankDirection;
     }
 
-    private void validateDirection(Movement movement) {
-        if (Integer.signum(movement.getRankGap()) != moveDirection) {
-            throw new IllegalArgumentException("폰은 뒤로 이동할 수 없습니다.");
-        }
-    }
-
-    private boolean isValidVerticalMove(Movement movement, Piece target) {
-        if (!movement.isVerticalMove() || !target.isEmpty()) {
+    private boolean isValidVerticalMove(Movement movement) {
+        if (!movement.isVerticalMove()) {
             return false;
         }
         int rankGap = movement.getRankGap();
-        if (rankGap == moveDirection) {
+        if (rankGap == validRankDirection) {
             return true;
         }
-        return Math.abs(rankGap) == START_JUMP_GAP && movement.isSourceRankMatch(startRank);
+        int rankDistance = movement.getRankDistance();
+        return rankDistance == START_JUMP_DISTANCE && movement.isSourceRankMatch(startRank);
     }
 }

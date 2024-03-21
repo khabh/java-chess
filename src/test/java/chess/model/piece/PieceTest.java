@@ -17,18 +17,18 @@ class PieceTest {
 
     private static Stream<Arguments> providePieceWithSignature() {
         return Stream.of(
-                Arguments.of(Piece.BLACK_BISHOP, "B"),
-                Arguments.of(Piece.BLACK_ROOK, "R"),
-                Arguments.of(Piece.BLACK_QUEEN, "Q"),
-                Arguments.of(Piece.BLACK_KNIGHT, "N"),
-                Arguments.of(Piece.BLACK_PAWN, "P"),
-                Arguments.of(Piece.BLACK_KING, "K"),
-                Arguments.of(Piece.WHITE_BISHOP, "b"),
-                Arguments.of(Piece.WHITE_ROOK, "r"),
-                Arguments.of(Piece.WHITE_QUEEN, "q"),
-                Arguments.of(Piece.WHITE_KNIGHT, "n"),
-                Arguments.of(Piece.WHITE_PAWN, "p"),
-                Arguments.of(Piece.WHITE_KING, "k")
+                Arguments.of(Bishop.from(Color.BLACK), "B"),
+                Arguments.of(Rook.from(Color.BLACK), "R"),
+                Arguments.of(Queen.from(Color.BLACK), "Q"),
+                Arguments.of(Knight.from(Color.BLACK), "N"),
+                Arguments.of(Pawn.from(Color.BLACK), "P"),
+                Arguments.of(King.from(Color.BLACK), "K"),
+                Arguments.of(Bishop.from(Color.WHITE), "b"),
+                Arguments.of(Rook.from(Color.WHITE), "r"),
+                Arguments.of(Queen.from(Color.WHITE), "q"),
+                Arguments.of(Knight.from(Color.WHITE), "n"),
+                Arguments.of(Pawn.from(Color.WHITE), "p"),
+                Arguments.of(King.from(Color.WHITE), "k")
         );
     }
 }

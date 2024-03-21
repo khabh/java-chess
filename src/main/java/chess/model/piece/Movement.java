@@ -25,6 +25,14 @@ public class Movement {
         return source.getRankGap(destination);
     }
 
+    public int getFileDistance() {
+        return Math.abs(getFileGap());
+    }
+
+    public int getRankDistance() {
+        return Math.abs(getRankGap());
+    }
+
     public boolean isStraight() {
         return getFileGap() == 0 || getRankGap() == 0;
     }
@@ -44,8 +52,8 @@ public class Movement {
 
     public List<Position> getIntermediatePositions() {
         List<Position> positions = new ArrayList<>();
-        int fileStep = getStep(getFileGap());
-        int rankStep = getStep(getRankGap());
+        int fileStep = getFileStep();
+        int rankStep = getRankStep();
         Position currentPosition = source.move(fileStep, rankStep);
         while (!currentPosition.equals(destination)) {
             positions.add(currentPosition);
@@ -54,8 +62,12 @@ public class Movement {
         return positions;
     }
 
-    private int getStep(int gap) {
-        return Integer.signum(gap);
+    private int getFileStep() {
+        return Integer.signum(getFileGap());
+    }
+
+    private int getRankStep() {
+        return Integer.signum(getRankGap());
     }
 
     public boolean isSourceRankMatch(int rank) {

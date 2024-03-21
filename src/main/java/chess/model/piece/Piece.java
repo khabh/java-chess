@@ -23,12 +23,7 @@ public abstract class Piece {
         this.type = type;
     }
 
-    public void validateMovementWithColor(Movement movement, Piece target) {
-        validateTargetColor(target);
-        validateMovement(movement, target);
-    }
-
-    abstract void validateMovement(Movement movement, Piece target);
+    public abstract boolean isValid(Movement movement);
 
     public String getSignature() {
         Signature signature = type.getSignature();
@@ -38,20 +33,15 @@ public abstract class Piece {
         return signature.getWhite();
     }
 
+    public boolean isType(Type type) {
+        return this.type == type;
+    }
+
     public boolean isEmpty() {
-        return Type.NONE.equals(type);
+        return isType(Type.NONE);
     }
 
-    private boolean isSameColorWith(Piece piece) {
+    public boolean isSameColorWith(Piece piece) {
         return color == piece.color;
-    }
-
-    protected void validateTargetColor(Piece target) {
-        if (target.isEmpty()) {
-            return;
-        }
-        if (target.isSameColorWith(this)) {
-            throw new IllegalArgumentException("같은 색을 가진 기물이 있는 위치로는 이동 불가");
-        }
     }
 }
