@@ -3,7 +3,6 @@ package chess.model.score;
 import chess.dto.ScoreDTO;
 import chess.model.board.Board;
 import chess.model.piece.Color;
-import chess.model.piece.Pawn;
 import chess.model.piece.Piece;
 import chess.model.piece.Type;
 
@@ -44,9 +43,8 @@ public class ScoreGenerator {
     }
 
     private double calculateReducedPawnScore(Color color) {
-        Piece pawn = Pawn.from(color);
         int sameFilePawnCount = IntStream.rangeClosed(Board.MIN_LENGTH, Board.MAX_LENGTH)
-                .map(file -> board.countPieceOfFile(pawn, file))
+                .map(file -> board.countPawnOfFile(color, file))
                 .filter(pawnCount -> pawnCount >= PAWN_REDUCE_THRESHOLD)
                 .sum();
         return sameFilePawnCount * REDUCED_PAWN_SCORE;

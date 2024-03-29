@@ -1,9 +1,6 @@
 package chess.model.board;
 
-import chess.model.piece.Color;
-import chess.model.piece.Empty;
-import chess.model.piece.King;
-import chess.model.piece.Piece;
+import chess.model.piece.*;
 import chess.model.position.Movement;
 import chess.model.position.Position;
 
@@ -49,9 +46,10 @@ public class Board {
                         collectingAndThen(counting(), Long::intValue)));
     }
 
-    public int countPieceOfFile(Piece piece, int file) {
+    public int countPawnOfFile(Color color, int file) {
+        Piece pawn = Pawn.from(color);
         return (int) getFile(file).stream()
-                .filter(filePiece -> filePiece.equals(piece))
+                .filter(filePiece -> filePiece.equals(pawn))
                 .count();
     }
 
