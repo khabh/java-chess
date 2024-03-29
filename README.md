@@ -2,9 +2,16 @@
 
 체스 미션 저장소
 
-## 우아한테크코스 코드리뷰
+## 실행 방법
 
-- [온라인 코드 리뷰 과정](https://github.com/woowacourse/woowacourse-docs/blob/master/maincourse/README.md)
+1. java-chess/docker 폴더에서 docker 실행 명령어 입력
+    - docker-compose -p chess up -d
+    - <img src="./image/startDocker.png">
+    - java-chess/docker/db/mysql/inti에 있는 init.sql 파일이 자동으로 실행됨
+2. Application 실행
+3. java-chess/docker 폴더에서 docker 종료 명령어 입력
+    - docker-compose -p chess down
+    - <img src="./image/endDocker.png">
 
 # 체스 게임 설명
 
