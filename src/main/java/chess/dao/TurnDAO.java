@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class TurnDAO {
     private static final String TABLE_NAME = "turns";
@@ -39,7 +40,7 @@ public class TurnDAO {
         }
     }
 
-    public TurnDTO findOne() {
+    public Optional<TurnDTO> findOne() {
         try (Connection connection = getConnection()) {
             PreparedStatement selectStatement = connection.prepareStatement(SELECT_QUERY);
             ResultSet selectedTurn = selectStatement.executeQuery();
@@ -49,12 +50,13 @@ public class TurnDAO {
         }
     }
 
-    private TurnDTO convertToTurn(ResultSet selectedTurn) throws SQLException {
+    private Optional<TurnDTO> convertToTurn(ResultSet selectedTurn) throws SQLException {
         if (selectedTurn.next()) {
             String currentColor = selectedTurn.getString("current_color");
-            return new TurnDTO(currentColor);
+            TurnDTO turnDTO = new TurnDTO(currentColor);
+            return Optional.of(turnDTO);
         }
-        return null;
+        return Optional.empty();
     }
 
     private Connection getConnection() {

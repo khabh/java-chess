@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Objects;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,13 +33,15 @@ class TurnDAOTest {
         String colorName = Color.WHITE.name();
         TurnDTO turnDTO = new TurnDTO(colorName);
         turnDAO.save(turnDTO);
-        assertThat(turnDAO.findOne()).isEqualTo(turnDTO);
+        TurnDTO savedTurnDTO = turnDAO.findOne()
+                .orElseThrow(() -> new IllegalStateException("조회된 Turn이 없습니다."));
+        assertThat(savedTurnDTO).isEqualTo(turnDTO);
     }
 
     @Test
     void 데이터_전체를_삭제한다() {
         turnDAO.deleteALl();
-        TurnDTO turnDTO = turnDAO.findOne();
-        assertThat(Objects.isNull(turnDTO)).isTrue();
+        Optional<TurnDTO> turnDTO = turnDAO.findOne();
+        assertThat(turnDTO.isEmpty()).isTrue();
     }
 }

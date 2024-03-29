@@ -23,12 +23,13 @@ public class BoardService {
     }
 
     public boolean isBoardExist() {
-        TurnDTO turnDTO = turnDAO.findOne();
-        return Objects.nonNull(turnDTO);
+        Optional<TurnDTO> turnDTO = turnDAO.findOne();
+        return turnDTO.isPresent();
     }
 
     public Board getBoard() {
-        TurnDTO turnDTO = turnDAO.findOne();
+        TurnDTO turnDTO = turnDAO.findOne()
+                .orElseThrow(() -> new IllegalStateException("조회할 수 있는 보드가 없습니다."));
         List<PieceDTO> pieceDTOs = pieceDAO.findAll();
         return convertToBoard(turnDTO, pieceDTOs);
     }
