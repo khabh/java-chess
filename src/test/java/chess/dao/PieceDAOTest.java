@@ -14,7 +14,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PieceDAOTest {
-    private static final ConnectionManager CONNECTION_MANAGER = ConnectionManager.getTest();
+    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager("chess_test");
     private final static List<PieceDTO> SAVED_PIECES = List.of(
             new PieceDTO(3, 2, Type.BLACK_PAWN.name()),
             new PieceDTO(4, 4, Type.WHITE_KING.name()),

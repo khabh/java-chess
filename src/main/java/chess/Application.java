@@ -9,7 +9,7 @@ import chess.view.OutputView;
 public class Application {
     public static void main(String[] args) {
         ChessGameController chessGameController = new ChessGameController(new OutputView(), new InputView(),
-                new BoardService(ConnectionManager.getProduction()));
+                new BoardService(new ConnectionManager("chess")));
         chessGameController.run();
     }
 }

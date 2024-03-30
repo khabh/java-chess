@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BoardServiceTest {
-    private static final ConnectionManager CONNECTION_MANAGER = ConnectionManager.getTest();
+    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager("chess_test");
 
     private final BoardService boardService = new BoardService(CONNECTION_MANAGER);
 
