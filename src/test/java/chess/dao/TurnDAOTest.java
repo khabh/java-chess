@@ -1,8 +1,8 @@
 package chess.dao;
 
-import chess.db.ConnectionManager;
 import chess.dto.TurnDTO;
 import chess.model.piece.Color;
+import chess.testutil.TestConnectionManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,13 +14,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TurnDAOTest {
-    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager("chess_test");
-
-    private final TurnDAO turnDAO = new TurnDAO(CONNECTION_MANAGER);
+    private final TurnDAO turnDAO = new TurnDAO(TestConnectionManager.getInstance());
 
     @BeforeEach
     void initTurnTable() {
-        try (Connection connection = CONNECTION_MANAGER.getConnection()) {
+        try (Connection connection = TestConnectionManager.getConnection()) {
             PreparedStatement truncateStatement = connection.prepareStatement("TRUNCATE TABLE turns");
             truncateStatement.executeUpdate();
         } catch (final SQLException e) {

@@ -1,8 +1,8 @@
 package chess.dao;
 
-import chess.db.ConnectionManager;
 import chess.dto.PieceDTO;
 import chess.model.piece.Type;
+import chess.testutil.TestConnectionManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,18 +14,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PieceDAOTest {
-    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager("chess_test");
     private final static List<PieceDTO> SAVED_PIECES = List.of(
             new PieceDTO(3, 2, Type.BLACK_PAWN.name()),
             new PieceDTO(4, 4, Type.WHITE_KING.name()),
             new PieceDTO(7, 8, Type.BLACK_KING.name())
     );
 
-    private final PieceDAO pieceDAO = new PieceDAO(CONNECTION_MANAGER);
+    private final PieceDAO pieceDAO = new PieceDAO(TestConnectionManager.getInstance());
 
     @BeforeEach
     void initPieceTable() {
-        try (Connection connection = CONNECTION_MANAGER.getConnection()) {
+        try (Connection connection = TestConnectionManager.getConnection()) {
             PreparedStatement truncateStatement = connection.prepareStatement("TRUNCATE TABLE pieces");
             truncateStatement.executeUpdate();
             pieceDAO.saveAll(SAVED_PIECES);
