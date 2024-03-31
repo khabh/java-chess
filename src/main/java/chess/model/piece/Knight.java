@@ -9,7 +9,7 @@ public class Knight extends Piece {
     private static final Piece WHITE_KING = new Knight(Color.WHITE);
 
     private Knight(Color color) {
-        super(color);
+        super(color, 2.5);
     }
 
     public static Piece from(Color color) {

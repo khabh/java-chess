@@ -4,9 +4,11 @@ import chess.model.position.Movement;
 
 public abstract class Piece {
     private final Color color;
+    private final double score;
 
-    Piece(Color color) {
+    Piece(Color color, double score) {
         this.color = color;
+        this.score = score;
     }
 
     public abstract boolean canMove(Movement movement, Piece target);
@@ -27,5 +29,9 @@ public abstract class Piece {
 
     public boolean hasColor(Color color) {
         return this.color == color;
+    }
+
+    public double getScore() {
+        return score;
     }
 }

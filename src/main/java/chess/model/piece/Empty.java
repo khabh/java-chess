@@ -6,7 +6,7 @@ public class Empty extends Piece {
     private static final Piece EMPTY = new Empty();
 
     private Empty() {
-        super(Color.NONE);
+        super(Color.NONE, 0.0);
     }
 
     public static Piece getInstance() {

@@ -4,7 +4,6 @@ import chess.dto.ScoreDTO;
 import chess.model.board.Board;
 import chess.model.piece.Color;
 import chess.model.piece.Piece;
-import chess.model.piece.Type;
 
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -35,8 +34,7 @@ public class ScoreGenerator {
     private double calculatePieceScore(Map<Piece, Integer> pieceCount) {
         double totalScore = 0;
         for (Piece piece : pieceCount.keySet()) {
-            Type type = Type.from(piece);
-            double score = Score.from(type);
+            double score = piece.getScore();
             totalScore += (score * pieceCount.get(piece));
         }
         return totalScore;

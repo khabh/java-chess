@@ -7,7 +7,7 @@ public class Queen extends Piece {
     private static final Piece WHITE_QUEEN = new Queen(Color.WHITE);
 
     private Queen(Color color) {
-        super(color);
+        super(color, 9.0);
     }
 
     public static Piece from(Color color) {

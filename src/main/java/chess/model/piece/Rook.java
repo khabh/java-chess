@@ -7,7 +7,7 @@ public class Rook extends Piece {
     private static final Piece WHITE_ROOK = new Rook(Color.WHITE);
 
     private Rook(Color color) {
-        super(color);
+        super(color, 5.0);
     }
 
     public static Piece from(Color color) {

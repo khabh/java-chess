@@ -8,7 +8,7 @@ public class King extends Piece {
     private static final Piece WHITE_KING = new King(Color.WHITE);
 
     private King(Color color) {
-        super(color);
+        super(color, 0.0);
     }
 
     public static Piece from(Color color) {

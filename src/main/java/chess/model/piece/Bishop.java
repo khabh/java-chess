@@ -7,7 +7,7 @@ public class Bishop extends Piece {
     private static final Piece WHITE_BISHOP = new Bishop(Color.WHITE);
 
     private Bishop(Color color) {
-        super(color);
+        super(color, 3.0);
     }
 
     public static Piece from(Color color) {

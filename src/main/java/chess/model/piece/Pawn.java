@@ -13,7 +13,7 @@ public class Pawn extends Piece {
     private final int startRank;
 
     private Pawn(Color color, RankDirection validRankDirection, int startRank) {
-        super(color);
+        super(color, 1.0);
         this.validRankDirection = validRankDirection;
         this.startRank = startRank;
     }
