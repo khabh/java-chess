@@ -1,6 +1,6 @@
 package chess.db;
 
-import chess.testutil.TestConnectionManager;
+import chess.testutil.db.TestConnectionManager;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatCode;

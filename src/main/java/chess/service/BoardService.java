@@ -2,7 +2,6 @@ package chess.service;
 
 import chess.dao.PieceDAO;
 import chess.dao.TurnDAO;
-import chess.db.ConnectionManager;
 import chess.dto.PieceDTO;
 import chess.dto.TurnDTO;
 import chess.model.board.Board;
@@ -17,9 +16,9 @@ public class BoardService {
     private final PieceDAO pieceDAO;
     private final TurnDAO turnDAO;
 
-    public BoardService(ConnectionManager connectionManager) {
-        this.pieceDAO = new PieceDAO(connectionManager);
-        this.turnDAO = new TurnDAO(connectionManager);
+    public BoardService(PieceDAO pieceDAO, TurnDAO turnDAO) {
+        this.pieceDAO = pieceDAO;
+        this.turnDAO = turnDAO;
     }
 
     public boolean isBoardExist() {

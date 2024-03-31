@@ -2,7 +2,7 @@ package chess.dao;
 
 import chess.dto.TurnDTO;
 import chess.model.piece.Color;
-import chess.testutil.TestConnectionManager;
+import chess.testutil.db.TestConnectionManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TurnDAOTest {
-    private final TurnDAO turnDAO = new TurnDAO(TestConnectionManager.getInstance());
+class SqlTurnDAOTest {
+    private final SqlTurnDAO sqlTurnDAO = new SqlTurnDAO(TestConnectionManager.getInstance());
 
     @BeforeEach
     void initTurnTable() {
@@ -30,16 +30,16 @@ class TurnDAOTest {
     void 입력된_데이터를_추가한다() {
         String colorName = Color.WHITE.name();
         TurnDTO turnDTO = new TurnDTO(colorName);
-        turnDAO.save(turnDTO);
-        TurnDTO savedTurnDTO = turnDAO.findOne()
+        sqlTurnDAO.save(turnDTO);
+        TurnDTO savedTurnDTO = sqlTurnDAO.findOne()
                 .orElseThrow(() -> new IllegalStateException("조회된 Turn이 없습니다."));
         assertThat(savedTurnDTO).isEqualTo(turnDTO);
     }
 
     @Test
     void 데이터_전체를_삭제한다() {
-        turnDAO.deleteALl();
-        Optional<TurnDTO> turnDTO = turnDAO.findOne();
+        sqlTurnDAO.deleteALl();
+        Optional<TurnDTO> turnDTO = sqlTurnDAO.findOne();
         assertThat(turnDTO.isEmpty()).isTrue();
     }
 }

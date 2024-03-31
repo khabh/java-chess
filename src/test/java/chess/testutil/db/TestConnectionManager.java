@@ -1,4 +1,4 @@
-package chess.testutil;
+package chess.testutil.db;
 
 import chess.db.ConnectionManager;
 

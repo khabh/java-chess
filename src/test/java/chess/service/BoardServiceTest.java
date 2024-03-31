@@ -1,38 +1,31 @@
 package chess.service;
 
-import chess.db.ConnectionManager;
+import chess.dao.PieceDAO;
+import chess.dao.TurnDAO;
 import chess.model.board.Board;
 import chess.model.piece.Color;
 import chess.model.piece.King;
 import chess.model.piece.Piece;
 import chess.model.piece.Queen;
 import chess.model.position.Position;
+import chess.testutil.dao.MemoryPieceDAO;
+import chess.testutil.dao.MemoryTurnDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BoardServiceTest {
-    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager("chess_test");
-
-    private final BoardService boardService = new BoardService(CONNECTION_MANAGER);
+    private BoardService boardService;
 
     @BeforeEach
     void initPieceAndTurn() {
-        try (Connection connection = CONNECTION_MANAGER.getConnection()) {
-            PreparedStatement truncatePieceStatement = connection.prepareStatement("TRUNCATE TABLE pieces");
-            PreparedStatement truncateTurnStatement = connection.prepareStatement("TRUNCATE TABLE turns");
-            truncatePieceStatement.executeUpdate();
-            truncateTurnStatement.executeUpdate();
-        } catch (final SQLException e) {
-            System.err.println(e.getMessage());
-        }
+        PieceDAO pieceDAO = new MemoryPieceDAO();
+        TurnDAO turnDAO = new MemoryTurnDAO();
+        boardService = new BoardService(pieceDAO, turnDAO);
     }
 
     @Test

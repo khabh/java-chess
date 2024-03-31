@@ -2,7 +2,7 @@ package chess.dao;
 
 import chess.dto.PieceDTO;
 import chess.model.piece.Type;
-import chess.testutil.TestConnectionManager;
+import chess.testutil.db.TestConnectionManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PieceDAOTest {
+class SqlPieceDAOTest {
     private static final List<PieceDTO> SAVED_PIECES = List.of(
             new PieceDTO(3, 2, Type.BLACK_PAWN.name()),
             new PieceDTO(4, 4, Type.WHITE_KING.name()),
@@ -27,11 +27,11 @@ class PieceDAOTest {
             new PieceDTO(3, 4, Type.WHITE_KNIGHT.name())
     );
 
-    private final PieceDAO pieceDAO = new PieceDAO(TestConnectionManager.getInstance());
+    private final SqlPieceDAO sqlPieceDAO = new SqlPieceDAO(TestConnectionManager.getInstance());
 
     @BeforeEach
     void initPieceTable() {
-        pieceDAO.saveAll(SAVED_PIECES);
+        sqlPieceDAO.saveAll(SAVED_PIECES);
     }
 
     @AfterEach
@@ -52,18 +52,18 @@ class PieceDAOTest {
 
     @Test
     void 입력된_데이터_전체를_추가한다() {
-        pieceDAO.saveAll(TEST_SAVED_PIECES);
-        assertThat(pieceDAO.findAll()).containsAll(TEST_SAVED_PIECES);
+        sqlPieceDAO.saveAll(TEST_SAVED_PIECES);
+        assertThat(sqlPieceDAO.findAll()).containsAll(TEST_SAVED_PIECES);
     }
 
     @Test
     void 데이터_전체를_삭제한다() {
-        pieceDAO.deleteAll();
-        assertThat(pieceDAO.findAll().isEmpty()).isTrue();
+        sqlPieceDAO.deleteAll();
+        assertThat(sqlPieceDAO.findAll().isEmpty()).isTrue();
     }
 
     @Test
     void 데이터_전체를_조회한다() {
-        assertThat(pieceDAO.findAll()).containsAll(SAVED_PIECES);
+        assertThat(sqlPieceDAO.findAll()).containsAll(SAVED_PIECES);
     }
 }
