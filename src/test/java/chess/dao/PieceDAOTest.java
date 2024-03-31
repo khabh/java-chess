@@ -3,31 +3,48 @@ package chess.dao;
 import chess.dto.PieceDTO;
 import chess.model.piece.Type;
 import chess.testutil.TestConnectionManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PieceDAOTest {
-    private final static List<PieceDTO> SAVED_PIECES = List.of(
+    private static final List<PieceDTO> SAVED_PIECES = List.of(
             new PieceDTO(3, 2, Type.BLACK_PAWN.name()),
             new PieceDTO(4, 4, Type.WHITE_KING.name()),
             new PieceDTO(7, 8, Type.BLACK_KING.name())
+    );
+
+    private static final List<PieceDTO> TEST_SAVED_PIECES = List.of(
+            new PieceDTO(7, 7, Type.WHITE_ROOK.name()),
+            new PieceDTO(3, 4, Type.WHITE_KNIGHT.name())
     );
 
     private final PieceDAO pieceDAO = new PieceDAO(TestConnectionManager.getInstance());
 
     @BeforeEach
     void initPieceTable() {
+        pieceDAO.saveAll(SAVED_PIECES);
+    }
+
+    @AfterEach
+    void rollbackPieceTable() {
+        List<PieceDTO> changedPieces = new ArrayList<>(SAVED_PIECES);
+        changedPieces.addAll(TEST_SAVED_PIECES);
         try (Connection connection = TestConnectionManager.getConnection()) {
-            PreparedStatement truncateStatement = connection.prepareStatement("TRUNCATE TABLE pieces");
-            truncateStatement.executeUpdate();
-            pieceDAO.saveAll(SAVED_PIECES);
+            for (PieceDTO pieceDTO : changedPieces) {
+                PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM pieces WHERE piece_file = ? AND piece_rank = ?");
+                deleteStatement.setInt(1, pieceDTO.file());
+                deleteStatement.setInt(2, pieceDTO.rank());
+                deleteStatement.executeUpdate();
+            }
         } catch (final SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -35,12 +52,8 @@ class PieceDAOTest {
 
     @Test
     void 입력된_데이터_전체를_추가한다() {
-        List<PieceDTO> pieceDTOs = List.of(
-                new PieceDTO(7, 7, Type.WHITE_ROOK.name()),
-                new PieceDTO(3, 4, Type.WHITE_KNIGHT.name())
-        );
-        pieceDAO.saveAll(pieceDTOs);
-        assertThat(pieceDAO.findAll()).containsAll(pieceDTOs);
+        pieceDAO.saveAll(TEST_SAVED_PIECES);
+        assertThat(pieceDAO.findAll()).containsAll(TEST_SAVED_PIECES);
     }
 
     @Test
