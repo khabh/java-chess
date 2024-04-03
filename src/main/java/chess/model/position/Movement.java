@@ -5,22 +5,22 @@ import java.util.List;
 
 public class Movement {
     private final Position source;
-    private final Position destination;
+    private final Position target;
 
-    public Movement(Position source, Position destination) {
-        if (source == destination) {
+    public Movement(Position source, Position target) {
+        if (source == target) {
             throw new IllegalArgumentException("출발지와 도착지가 동일하면 움직일 수 없습니다.");
         }
         this.source = source;
-        this.destination = destination;
+        this.target = target;
     }
 
     public int getFileGap() {
-        return source.getFileGap(destination);
+        return source.getFileGap(target);
     }
 
     public int getRankGap() {
-        return source.getRankGap(destination);
+        return source.getRankGap(target);
     }
 
     public int getFileDistance() {
@@ -36,11 +36,11 @@ public class Movement {
     }
 
     public boolean isSameFile() {
-        return source.isSameFile(destination);
+        return source.isSameFile(target);
     }
 
     private boolean isSameRank() {
-        return source.isSameRank(destination);
+        return source.isSameRank(target);
     }
 
     public boolean isDiagonal() {
@@ -52,10 +52,10 @@ public class Movement {
             return new ArrayList<>();
         }
         List<Position> positions = new ArrayList<>();
-        Position currentPosition = source.moveToTargetByStep(destination);
-        while (!currentPosition.equals(destination)) {
+        Position currentPosition = source.moveToTargetByStep(target);
+        while (!currentPosition.equals(target)) {
             positions.add(currentPosition);
-            currentPosition = currentPosition.moveToTargetByStep(destination);
+            currentPosition = currentPosition.moveToTargetByStep(target);
         }
         return positions;
     }
@@ -68,7 +68,7 @@ public class Movement {
         return source;
     }
 
-    public Position getDestination() {
-        return destination;
+    public Position getTarget() {
+        return target;
     }
 }

@@ -1,90 +1,97 @@
 package chess.service;
 
-import chess.dao.PieceDAO;
-import chess.dao.TurnDAO;
-import chess.dto.PieceDTO;
-import chess.dto.TurnDTO;
+import chess.dao.BoardDAO;
+import chess.dao.MoveDAO;
+import chess.dao.WinnerDAO;
+import chess.dto.*;
 import chess.model.board.Board;
+import chess.model.board.InitialBoardGenerator;
 import chess.model.piece.Color;
-import chess.model.piece.Piece;
-import chess.model.piece.Type;
+import chess.model.position.Movement;
 import chess.model.position.Position;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 public class BoardService {
-    private final PieceDAO pieceDAO;
-    private final TurnDAO turnDAO;
+    private final BoardDAO boardDAO;
+    private final MoveDAO moveDAO;
+    private final WinnerDAO winnerDAO;
 
-    public BoardService(PieceDAO pieceDAO, TurnDAO turnDAO) {
-        this.pieceDAO = pieceDAO;
-        this.turnDAO = turnDAO;
+    public BoardService(BoardDAO boardDAO, MoveDAO moveDAO, WinnerDAO winnerDAO) {
+        this.boardDAO = boardDAO;
+        this.moveDAO = moveDAO;
+        this.winnerDAO = winnerDAO;
     }
 
-    public boolean isBoardExist() {
-        Optional<TurnDTO> turnDTO = turnDAO.findOne();
-        return turnDTO.isPresent();
+    public String getWinnerOfBoard(String boardName) {
+        BoardDTO boardDTO = boardDAO.findByName(boardName)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방 이름입니다."));
+        WinnerDTO winnerDTO = winnerDAO.findByBoard(boardDTO.id())
+                .orElseThrow(() -> new IllegalArgumentException("아직 게임 결과가 생성되지 않았습니다."));
+        return winnerDTO.color();
     }
 
-    public Board getBoard() {
-        TurnDTO turnDTO = turnDAO.findOne()
-                .orElseThrow(() -> new IllegalStateException("조회할 수 있는 보드가 없습니다."));
-        List<PieceDTO> pieceDTOs = pieceDAO.findAll();
-        return convertToBoard(turnDTO, pieceDTOs);
+    public Board getOrCreateBoard(String boardName) {
+        Optional<Board> existingBoard = getExistingBoard(boardName);
+        return existingBoard.orElseGet(() -> createBoard(boardName));
     }
 
-    private Board convertToBoard(TurnDTO turnDTO, List<PieceDTO> pieceDTOs) {
-        if (pieceDTOs.isEmpty()) {
-            throw new IllegalStateException("조회할 수 있는 보드가 없습니다.");
+    private Optional<Board> getExistingBoard(String boardName) {
+        Optional<BoardDTO> boardDTO = boardDAO.findByName(boardName);
+        if (boardDTO.isEmpty()) {
+            return Optional.empty();
         }
-        Color color = Color.from(turnDTO.currentColor());
-        Map<Position, Piece> piecePosition = convertToPiecePosition(pieceDTOs);
-        return new Board(piecePosition, color);
+        validateBoardNotEnded(boardDTO.get());
+        return Optional.of(getBoard(boardName));
     }
 
-    private Map<Position, Piece> convertToPiecePosition(List<PieceDTO> pieceDTOs) {
-        Map<Position, Piece> piecePosition = new HashMap<>();
-        for (PieceDTO pieceDTO : pieceDTOs) {
-            Position position = Position.of(pieceDTO.file(), pieceDTO.rank());
-            Piece piece = Type.getPiece(pieceDTO.type());
-            piecePosition.put(position, piece);
+    private void validateBoardNotEnded(BoardDTO boardDTO) {
+        int boardId = boardDTO.id();
+        Optional<WinnerDTO> winnerDTO = winnerDAO.findByBoard(boardId);
+        if (winnerDTO.isPresent()) {
+            throw new IllegalArgumentException("이미 게임이 종료된 방입니다.");
         }
-        return piecePosition;
     }
 
-    public void saveBoard(Board board) {
-        deleteExistingBoard();
-        if (board.getWinnerColor() != Color.NONE) {
-            return;
+    public Board getBoard(String boardName) {
+        BoardDTO boardDTO = boardDAO.findByName(boardName)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 방 이름입니다."));
+        List<MoveDTO> moveDTOs = moveDAO.findByBoard(boardDTO.id());
+        return convertToBoard(boardDTO, moveDTOs);
+    }
+
+    private Board convertToBoard(BoardDTO boardDTO, List<MoveDTO> moveDTOs) {
+        int boardId = boardDTO.id();
+        Board board = new InitialBoardGenerator().create(boardId);
+        for (MoveDTO moveDTO : moveDTOs) {
+            Position source = Position.of(moveDTO.sourceFile(), moveDTO.sourceRank());
+            Position target = Position.of(moveDTO.targetFile(), moveDTO.targetRank());
+            board.move(new Movement(source, target));
         }
-        saveTurn(board.getCurrentColor());
-        savePieces(board.getSquares());
+        return board;
     }
 
-    private void deleteExistingBoard() {
-        turnDAO.deleteALl();
-        pieceDAO.deleteAll();
+    public Board createBoard(String boardName) {
+        BoardDTOForSave boardDTO = new BoardDTOForSave(boardName);
+        int boardId = boardDAO.save(boardDTO);
+        return new InitialBoardGenerator().create(boardId);
     }
 
-    private void saveTurn(Color color) {
-        TurnDTO turnDTO = new TurnDTO(color.name());
-        turnDAO.save(turnDTO);
+    public void moveBoard(Board board, Movement movement) {
+        board.move(movement);
+        addMovement(board.getId(), movement);
     }
 
-    private void savePieces(Map<Position, Piece> piecePosition) {
-        List<PieceDTO> pieceDTOs = new ArrayList<>();
-        for (Position position : piecePosition.keySet()) {
-            Piece piece = piecePosition.get(position);
-            PieceDTO pieceDTO = convertToPieceDTO(position, piece);
-            pieceDTOs.add(pieceDTO);
-        }
-        pieceDAO.saveAll(pieceDTOs);
+    private void addMovement(int boardId, Movement movement) {
+        Position source = movement.getSource();
+        Position target = movement.getTarget();
+        MoveDTOForSave moveDTO = new MoveDTOForSave(boardId, source, target);
+        moveDAO.save(moveDTO);
     }
 
-    private static PieceDTO convertToPieceDTO(Position position, Piece piece) {
-        int file = position.getFile();
-        int rank = position.getRank();
-        Type type = Type.from(piece);
-        return new PieceDTO(file, rank, type.name());
+    public void addBoardWinner(Board board, Color winnerColor) {
+        WinnerDTOForSave winnerDTO = new WinnerDTOForSave(board.getId(), winnerColor.name());
+        winnerDAO.save(winnerDTO);
     }
 }

@@ -8,4 +8,8 @@ public class DatabaseException extends RuntimeException {
     public DatabaseException(String message, SQLException e) {
         super(ERROR_PREFIX + message, e);
     }
+
+    public DatabaseException(String message) {
+        super(ERROR_PREFIX + message);
+    }
 }

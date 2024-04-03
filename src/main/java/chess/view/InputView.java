@@ -12,6 +12,16 @@ public class InputView {
     private static final int FILE_START_ASCII = 'a' - 1;
     private static final int RANK_START_ASCII = '1' - 1;
 
+    public String askBoardName() {
+        System.out.println("입장할 방의 이름을 입력해 주세요.");
+        return SCANNER.next();
+    }
+
+    public String askSearchedBoardName() {
+        System.out.println("결과를 조회할 방의 이름을 입력해 주세요.");
+        return SCANNER.next();
+    }
+
     public Command askCommand() {
         String input = SCANNER.next();
         return Command.findBy(input);

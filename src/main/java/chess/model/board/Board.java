@@ -18,12 +18,18 @@ public class Board {
     public static final int MAX_LENGTH = 8;
     private static final Piece EMPTY = Empty.getInstance();
 
+    private final int id;
     private final Map<Position, Piece> squares;
     private Color currentColor;
 
-    public Board(Map<Position, Piece> squares, Color currentColor) {
+    public Board(int id, Map<Position, Piece> squares, Color currentColor) {
+        this.id = id;
         this.squares = new HashMap<>(squares);
         this.currentColor = currentColor;
+    }
+
+    public Board(Map<Position, Piece> squares, Color currentColor) {
+        this(1, squares, currentColor);
     }
 
     public Piece getPiece(int file, int rank) {
@@ -112,7 +118,7 @@ public class Board {
     }
 
     private void updateSquare(Movement movement) {
-        Position destination = movement.getDestination();
+        Position destination = movement.getTarget();
         Position source = movement.getSource();
         squares.put(destination, getSourcePiece(movement));
         squares.remove(source);
@@ -124,7 +130,7 @@ public class Board {
     }
 
     private Piece getDestinationOf(Movement movement) {
-        Position destination = movement.getDestination();
+        Position destination = movement.getTarget();
         return getByPosition(destination);
     }
 
@@ -137,6 +143,10 @@ public class Board {
     }
 
     public Color getCurrentColor() {
-        return currentColor;
+        return null;
+    }
+
+    public int getId() {
+        return id;
     }
 }

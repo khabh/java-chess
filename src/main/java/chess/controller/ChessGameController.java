@@ -1,9 +1,8 @@
 package chess.controller;
 
-import chess.dto.BoardDTO;
+import chess.dto.BoardDTOForView;
 import chess.dto.ScoreDTO;
 import chess.model.board.Board;
-import chess.model.board.InitialBoardGenerator;
 import chess.model.piece.Color;
 import chess.model.position.Movement;
 import chess.model.position.Position;
@@ -28,31 +27,44 @@ public class ChessGameController {
 
     public void run() {
         outputView.printGameIntro();
-        while (getValidCommand() != Command.START) {
-            outputView.printException("게임을 시작하려면 start를 입력하세요.");
+        Command command = retryOnException(this::getValidInitCommand);
+        if (command == Command.SEARCH) {
+            retryOnException(this::searchGameResult);
+            return;
         }
         start();
     }
 
+    private Command getValidInitCommand() {
+        Command command = getValidCommand();
+        if (command == Command.START || command == Command.SEARCH) {
+            return command;
+        }
+        throw new IllegalArgumentException("start 혹은 search를 입력해 주세요.");
+    }
+
+    private void searchGameResult() {
+        String boardName = inputView.askSearchedBoardName();
+        String winnerColor = boardService.getWinnerOfBoard(boardName);
+        outputView.printWinner(winnerColor);
+    }
+
     private void start() {
-        Board board = getOrCreateBoard();
+        Board board = retryOnException(this::getOrCreateBoard);
         GameStatus gameStatus = new GameStatus();
         showBoard(board);
         while (gameStatus.isRunning()) {
             retryOnException(() -> playTurn(gameStatus, board));
         }
-        boardService.saveBoard(board);
     }
 
     private Board getOrCreateBoard() {
-        if (boardService.isBoardExist()) {
-            return boardService.getBoard();
-        }
-        return new InitialBoardGenerator().create();
+        String boardName = inputView.askBoardName();
+        return boardService.getOrCreateBoard(boardName);
     }
 
     private void showBoard(Board board) {
-        BoardDTO boardDTO = BoardDTO.from(board);
+        BoardDTOForView boardDTO = BoardDTOForView.from(board);
         outputView.printBoard(boardDTO);
     }
 
@@ -83,6 +95,7 @@ public class ChessGameController {
         if (winnerColor == Color.NONE) {
             return;
         }
+        boardService.addBoardWinner(board, winnerColor);
         gameStatus.stop();
         outputView.printWinner(winnerColor.name());
     }
@@ -91,7 +104,7 @@ public class ChessGameController {
         Position source = inputView.askPosition();
         Position destination = inputView.askPosition();
         Movement movement = new Movement(source, destination);
-        board.move(movement);
+        boardService.moveBoard(board, movement);
     }
 
     private void showResult(Board board) {

@@ -7,33 +7,31 @@ CREATE DATABASE IF NOT EXISTS chess_test DEFAULT CHARACTER SET utf8 COLLATE utf8
 # 애플리케이션 실행용 테이블 초기화
 USE chess;
 
-CREATE TABLE IF NOT EXISTS turns
+CREATE TABLE IF NOT EXISTS boards
 (
-    current_color VARCHAR(10) NOT NULL,
-    PRIMARY KEY (current_color)
+    id   INT         NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS pieces
+CREATE TABLE IF NOT EXISTS moves
 (
-    piece_file INT         NOT NULL,
-    piece_rank INT         NOT NULL,
-    piece_type VARCHAR(20) NOT NULL,
-    PRIMARY KEY (piece_file, piece_rank)
+    id          INT NOT NULL AUTO_INCREMENT,
+    board_id    INT NOT NULL,
+    source_file INT NOT NULL,
+    source_rank INT NOT NULL,
+    target_file INT NOT NULL,
+    target_rank INT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (board_id) REFERENCES boards (id)
 );
 
-# 테스트용 테이블 초기화
-USE chess_test;
-
-CREATE TABLE IF NOT EXISTS turns
+CREATE TABLE IF NOT EXISTS winners
 (
-    current_color VARCHAR(10) NOT NULL,
-    PRIMARY KEY (current_color)
+    id       INT         NOT NULL AUTO_INCREMENT,
+    color    VARCHAR(50) NOT NULL,
+    board_id INT         NOT NULL UNIQUE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (board_id) REFERENCES boards (id)
 );
 
-CREATE TABLE IF NOT EXISTS pieces
-(
-    piece_file INT         NOT NULL,
-    piece_rank INT         NOT NULL,
-    piece_type VARCHAR(20) NOT NULL,
-    PRIMARY KEY (piece_file, piece_rank)
-);

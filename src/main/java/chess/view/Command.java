@@ -3,6 +3,7 @@ package chess.view;
 import java.util.Arrays;
 
 public enum Command {
+    SEARCH("search"),
     START("start"),
     MOVE("move"),
     END("end"),
