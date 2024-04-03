@@ -1,6 +1,13 @@
 package chess.model.piece;
 
+import chess.model.board.History;
+import chess.model.board.MovementAnalysis;
+import chess.model.board.MovementValidator;
 import chess.model.position.Movement;
+import chess.model.position.Position;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class Knight extends Piece {
     private static final int LONG_MOVE_DISTANCE = 2;
@@ -17,6 +24,14 @@ public class Knight extends Piece {
             return BLACK_KING;
         }
         return WHITE_KING;
+    }
+
+    @Override
+    public MovementAnalysis analyze(Movement movement, History history) {
+        validateCurrentColor(history);
+        MovementValidator movementValidator = new MovementValidator(Collections.emptyMap());
+        Map<Position, Piece> changes = getDefaultChanges(movement);
+        return new MovementAnalysis(movementValidator, changes);
     }
 
     @Override

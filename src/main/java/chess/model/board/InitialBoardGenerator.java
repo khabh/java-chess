@@ -8,7 +8,6 @@ import java.util.Map;
 
 public class InitialBoardGenerator {
     private static final Map<Position, Piece> squares = new HashMap<>();
-    public static final Color START_COLOR = Color.WHITE;
 
     static {
         squares.put(Position.of(1, 8), Rook.from(Color.BLACK));
@@ -38,6 +37,6 @@ public class InitialBoardGenerator {
     }
 
     public Board create(int boardId) {
-        return new Board(boardId, squares, START_COLOR);
+        return new Board(boardId, squares);
     }
 }

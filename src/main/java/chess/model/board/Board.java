@@ -4,7 +4,6 @@ import chess.model.piece.*;
 import chess.model.position.Movement;
 import chess.model.position.Position;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +19,16 @@ public class Board {
 
     private final int id;
     private final Map<Position, Piece> squares;
-    private Color currentColor;
-
-    public Board(int id, Map<Position, Piece> squares, Color currentColor) {
-        this.id = id;
-        this.squares = new HashMap<>(squares);
-        this.currentColor = currentColor;
-    }
+    private final History history;
 
     public Board(Map<Position, Piece> squares, Color currentColor) {
-        this(1, squares, currentColor);
+        this(0, squares);
+    }
+
+    public Board(int id, Map<Position, Piece> squares) {
+        this.id = id;
+        this.squares = new HashMap<>(squares);
+        this.history = new History();
     }
 
     public Piece getPiece(int file, int rank) {
@@ -67,6 +66,7 @@ public class Board {
     }
 
     public Color getWinnerColor() {
+        Color currentColor = history.getCurrentColor();
         if (isKingCaptured(currentColor)) {
             return currentColor.getOpposite();
         }
@@ -81,47 +81,41 @@ public class Board {
     }
 
     public void move(Movement movement) {
-        validateTurn(movement);
-        validateMove(movement);
-        updateSquare(movement);
-        currentColor = currentColor.getOpposite();
+        validateMovement(movement);
+        Piece sourcePiece = getSourcePiece(movement);
+        MovementAnalysis movementAnalysis = sourcePiece.analyze(movement, history);
+        validateSquareColors(movementAnalysis);
+        changeSquares(movementAnalysis);
+        history.addChange(new Change(movement, sourcePiece));
     }
 
-    private void validateTurn(Movement movement) {
-        Piece sourcePiece = getSourcePiece(movement);
-        if (!sourcePiece.hasColor(currentColor)) {
-            throw new IllegalArgumentException("현재 턴에 맞는 기물을 선택해주세요.");
+    private void validateSquareColors(MovementAnalysis movementAnalysis) {
+        Map<Position, Color> validColors = movementAnalysis.getValidColors();
+        for (Position position : validColors.keySet()) {
+            Piece piece = getByPosition(position);
+            if (!piece.hasColor(validColors.get(position))) {
+                throw new IllegalArgumentException("올바르지 않은 움직임입니다.");
+            }
         }
     }
 
-    private void validateMove(Movement movement) {
-        validateMovementByPiece(movement);
-        validateIntermediatePositions(movement);
+    private void changeSquares(MovementAnalysis movementAnalysis) {
+        Map<Position, Piece> changes = movementAnalysis.getChanges();
+        for (Position position : changes.keySet()) {
+            if (changes.get(position).equals(EMPTY)) {
+                squares.remove(position);
+                continue;
+            }
+            squares.put(position, changes.get(position));
+        }
     }
 
-    private void validateMovementByPiece(Movement movement) {
+    private void validateMovement(Movement movement) {
         Piece sourcePiece = getSourcePiece(movement);
-        Piece destinationPiece = getDestinationOf(movement);
-        if (!sourcePiece.canMove(movement, destinationPiece)) {
+        Piece targetPiece = getTargetOf(movement);
+        if (!sourcePiece.canMove(movement, targetPiece)) {
             throw new IllegalArgumentException("올바르지 않은 움직임입니다.");
         }
-    }
-
-    private void validateIntermediatePositions(Movement movement) {
-        boolean isMovementBlocked = movement.getIntermediatePositions()
-                .stream()
-                .map(this::getByPosition)
-                .anyMatch(piece -> !piece.isEmpty());
-        if (isMovementBlocked) {
-            throw new IllegalArgumentException("이동 경로에 다른 기물이 있습니다.");
-        }
-    }
-
-    private void updateSquare(Movement movement) {
-        Position destination = movement.getTarget();
-        Position source = movement.getSource();
-        squares.put(destination, getSourcePiece(movement));
-        squares.remove(source);
     }
 
     private Piece getSourcePiece(Movement movement) {
@@ -129,21 +123,13 @@ public class Board {
         return getByPosition(source);
     }
 
-    private Piece getDestinationOf(Movement movement) {
+    private Piece getTargetOf(Movement movement) {
         Position destination = movement.getTarget();
         return getByPosition(destination);
     }
 
     private Piece getByPosition(Position position) {
         return squares.getOrDefault(position, EMPTY);
-    }
-
-    public Map<Position, Piece> getSquares() {
-        return Collections.unmodifiableMap(squares);
-    }
-
-    public Color getCurrentColor() {
-        return null;
     }
 
     public int getId() {

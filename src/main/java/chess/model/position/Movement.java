@@ -2,6 +2,7 @@ package chess.model.position;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Movement {
     private final Position source;
@@ -39,7 +40,7 @@ public class Movement {
         return source.isSameFile(target);
     }
 
-    private boolean isSameRank() {
+    public boolean isSameRank() {
         return source.isSameRank(target);
     }
 
@@ -48,9 +49,7 @@ public class Movement {
     }
 
     public List<Position> getIntermediatePositions() {
-        if (!isSameFileOrRank() && !isDiagonal()) {
-            return new ArrayList<>();
-        }
+        validateCanGetIntermediatePositions();
         List<Position> positions = new ArrayList<>();
         Position currentPosition = source.moveToTargetByStep(target);
         while (!currentPosition.equals(target)) {
@@ -58,6 +57,12 @@ public class Movement {
             currentPosition = currentPosition.moveToTargetByStep(target);
         }
         return positions;
+    }
+
+    private void validateCanGetIntermediatePositions() {
+        if (!isSameFileOrRank() && !isDiagonal()) {
+            throw new IllegalStateException("직선 경로를 반환할 수 없습니다.");
+        }
     }
 
     public boolean isSourceRankMatch(int rank) {
@@ -70,5 +75,18 @@ public class Movement {
 
     public Position getTarget() {
         return target;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movement movement = (Movement) o;
+        return Objects.equals(source, movement.source) && Objects.equals(target, movement.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, target);
     }
 }

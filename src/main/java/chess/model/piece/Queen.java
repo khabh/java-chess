@@ -1,6 +1,12 @@
 package chess.model.piece;
 
+import chess.model.board.History;
+import chess.model.board.MovementAnalysis;
+import chess.model.board.MovementValidator;
 import chess.model.position.Movement;
+import chess.model.position.Position;
+
+import java.util.Map;
 
 public class Queen extends Piece {
     private static final Piece BLACK_QUEEN = new Queen(Color.BLACK);
@@ -15,6 +21,14 @@ public class Queen extends Piece {
             return BLACK_QUEEN;
         }
         return WHITE_QUEEN;
+    }
+
+    @Override
+    public MovementAnalysis analyze(Movement movement, History history) {
+        validateCurrentColor(history);
+        MovementValidator movementValidator = getDefaultValidator(movement);
+        Map<Position, Piece> changes = getDefaultChanges(movement);
+        return new MovementAnalysis(movementValidator, changes);
     }
 
     @Override
