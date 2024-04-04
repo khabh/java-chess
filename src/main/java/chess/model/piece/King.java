@@ -40,7 +40,7 @@ public class King extends Piece {
     }
 
     private boolean isCommonMove(Movement movement) {
-        return movement.getFileGap() == COMMON_MOVE_DISTANCE || movement.getRankGap() == COMMON_MOVE_DISTANCE;
+        return movement.getFileDistance() == COMMON_MOVE_DISTANCE || movement.getRankDistance() == COMMON_MOVE_DISTANCE;
     }
 
     private void validateCastling(Movement movement, History history) {
@@ -53,7 +53,6 @@ public class King extends Piece {
     private Map<Position, Piece> getCastlingChanges(Movement movement) {
         Position currentRookPosition = getCastlingRook(movement);
         Position changedRookPosition = movement.getIntermediatePositions().get(0);
-        Movement rookMove = new Movement(currentRookPosition, changedRookPosition);
         Map<Position, Piece> changes = getDefaultChanges(movement);
         changes.put(currentRookPosition, Empty.getInstance());
         changes.put(changedRookPosition, Rook.from(getColor()));
@@ -78,8 +77,7 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean canMove(Movement movement, Piece target) {
-        validateTargetColor(target);
+    public boolean canMove(Movement movement) {
         if (isCommonMove(movement)) {
             return true;
         }

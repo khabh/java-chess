@@ -21,19 +21,13 @@ public abstract class Piece {
 
     public abstract MovementAnalysis analyze(Movement movement, History history);
 
-    public abstract boolean canMove(Movement movement, Piece target);
+    public abstract boolean canMove(Movement movement);
 
     protected void validateCurrentColor(History history) {
         if (history.getCurrentColor() == color) {
             return;
         }
         throw new IllegalArgumentException("현재 턴에 맞는 기물을 선택해 주세요.");
-    }
-
-    protected void validateTargetColor(Piece target) {
-        if (target.hasColor(color)) {
-            throw new IllegalArgumentException("동일한 색상의 기물이 있는 위치로 움직일 수 없습니다.");
-        }
     }
 
     protected MovementValidator getDefaultValidator(Movement movement) {

@@ -22,7 +22,7 @@ class PawnTest {
             Position source = Position.of(1, 1);
             Position destination = Position.of(1, 2);
             Movement movement = new Movement(source, destination);
-            assertThatThrownBy(() -> whitePawn.canMove(movement, whitePawn))
+            assertThatThrownBy(() -> whitePawn.canMove(movement))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -32,7 +32,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(whitePawn.canMove(movement, blackPawn)).isFalse();
+            assertThat(whitePawn.canMove(movement)).isFalse();
         }
 
         @ParameterizedTest
@@ -41,7 +41,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(whitePawn.canMove(movement, empty)).isTrue();
+            assertThat(whitePawn.canMove(movement)).isTrue();
         }
 
         @ParameterizedTest
@@ -50,7 +50,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(whitePawn.canMove(movement, empty)).isTrue();
+            assertThat(whitePawn.canMove(movement)).isTrue();
         }
 
         @ParameterizedTest
@@ -59,7 +59,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(whitePawn.canMove(movement, empty)).isFalse();
+            assertThat(whitePawn.canMove(movement)).isFalse();
         }
 
         @ParameterizedTest
@@ -68,7 +68,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(whitePawn.canMove(movement, blackPawn)).isTrue();
+            assertThat(whitePawn.canMove(movement)).isTrue();
         }
 
         @ParameterizedTest
@@ -77,7 +77,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(whitePawn.canMove(movement, empty)).isFalse();
+            assertThat(whitePawn.canMove(movement)).isFalse();
         }
 
 
@@ -87,7 +87,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(whitePawn.canMove(movement, empty)).isFalse();
+            assertThat(whitePawn.canMove(movement)).isFalse();
         }
     }
 
@@ -98,7 +98,7 @@ class PawnTest {
             Position source = Position.of(2, 4);
             Position destination = Position.of(2, 3);
             Movement movement = new Movement(source, destination);
-            assertThatThrownBy(() -> blackPawn.canMove(movement, blackPawn))
+            assertThatThrownBy(() -> blackPawn.canMove(movement))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -108,7 +108,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(blackPawn.canMove(movement, whitePawn)).isFalse();
+            assertThat(blackPawn.canMove(movement)).isFalse();
         }
 
         @ParameterizedTest
@@ -117,7 +117,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(blackPawn.canMove(movement, empty)).isTrue();
+            assertThat(blackPawn.canMove(movement)).isTrue();
         }
 
         @ParameterizedTest
@@ -126,7 +126,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(blackPawn.canMove(movement, empty)).isTrue();
+            assertThat(blackPawn.canMove(movement)).isTrue();
         }
 
         @ParameterizedTest
@@ -135,7 +135,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(blackPawn.canMove(movement, empty)).isFalse();
+            assertThat(blackPawn.canMove(movement)).isFalse();
         }
 
         @ParameterizedTest
@@ -144,7 +144,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(blackPawn.canMove(movement, whitePawn)).isTrue();
+            assertThat(blackPawn.canMove(movement)).isTrue();
         }
 
         @ParameterizedTest
@@ -153,7 +153,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(blackPawn.canMove(movement, empty)).isFalse();
+            assertThat(blackPawn.canMove(movement)).isFalse();
         }
 
         @ParameterizedTest
@@ -162,7 +162,7 @@ class PawnTest {
             Position source = Position.of(sourceFile, sourceRank);
             Position destination = Position.of(destinationFile, destinationRank);
             Movement movement = new Movement(source, destination);
-            assertThat(blackPawn.canMove(movement, empty)).isFalse();
+            assertThat(blackPawn.canMove(movement)).isFalse();
         }
     }
 }

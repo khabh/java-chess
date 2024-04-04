@@ -16,7 +16,7 @@ public class Empty extends Piece {
     }
 
     @Override
-    public boolean canMove(Movement movement, Piece target) {
+    public boolean canMove(Movement movement) {
         throw new IllegalArgumentException("기물이 없을 때는 움직일 수 없습니다.");
     }
 

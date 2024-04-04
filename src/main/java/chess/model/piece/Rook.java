@@ -32,8 +32,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean canMove(Movement movement, Piece piece) {
-        validateTargetColor(piece);
+    public boolean canMove(Movement movement) {
         return movement.isSameFileOrRank();
     }
 }

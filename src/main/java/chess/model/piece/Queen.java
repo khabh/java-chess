@@ -25,15 +25,13 @@ public class Queen extends Piece {
 
     @Override
     public MovementAnalysis analyze(Movement movement, History history) {
-        validateCurrentColor(history);
         MovementValidator movementValidator = getDefaultValidator(movement);
         Map<Position, Piece> changes = getDefaultChanges(movement);
         return new MovementAnalysis(movementValidator, changes);
     }
 
     @Override
-    public boolean canMove(Movement movement, Piece target) {
-        validateTargetColor(target);
+    public boolean canMove(Movement movement) {
         return movement.isDiagonal() || movement.isSameFileOrRank();
     }
 }

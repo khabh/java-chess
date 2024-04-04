@@ -40,4 +40,8 @@ public class Change {
         Type pieceType = Type.from(piece);
         return pieceType != Type.BLACK_PAWN && pieceType != Type.WHITE_PAWN;
     }
+
+    public boolean isSource(Position position) {
+        return movement.getSource().equals(position);
+    }
 }

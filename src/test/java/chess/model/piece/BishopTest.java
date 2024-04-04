@@ -16,7 +16,7 @@ class BishopTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(bishop.canMove(movement, Empty.getInstance())).isTrue();
+        assertThat(bishop.canMove(movement)).isTrue();
     }
 
     @ParameterizedTest
@@ -25,6 +25,6 @@ class BishopTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(bishop.canMove(movement, Empty.getInstance())).isFalse();
+        assertThat(bishop.canMove(movement)).isFalse();
     }
 }

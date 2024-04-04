@@ -67,15 +67,14 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean canMove(Movement movement, Piece target) {
-        validateTargetColor(target);
+    public boolean canMove(Movement movement) {
         if (!isValidDirection(movement)) {
             return false;
         }
         if (movement.isDiagonal()) {
             return canMoveDiagonally(movement);
         }
-        return isValidVerticalMove(movement, target);
+        return isValidVerticalMove(movement);
     }
 
     private boolean isValidDirection(Movement movement) {
@@ -86,8 +85,8 @@ public class Pawn extends Piece {
         return movement.getRankDistance() == COMMON_RANK_DISTANCE;
     }
 
-    private boolean isValidVerticalMove(Movement movement, Piece target) {
-        if (!movement.isSameFile() || !target.isEmpty()) {
+    private boolean isValidVerticalMove(Movement movement) {
+        if (!movement.isSameFile()) {
             return false;
         }
         int rankDistance = movement.getRankDistance();

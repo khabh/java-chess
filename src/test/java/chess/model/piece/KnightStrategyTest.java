@@ -17,7 +17,7 @@ class KnightStrategyTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(knight.canMove(movement, Empty.getInstance())).isTrue();
+        assertThat(knight.canMove(movement)).isTrue();
     }
 
     @ParameterizedTest
@@ -27,6 +27,6 @@ class KnightStrategyTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(knight.canMove(movement, Empty.getInstance())).isFalse();
+        assertThat(knight.canMove(movement)).isFalse();
     }
 }

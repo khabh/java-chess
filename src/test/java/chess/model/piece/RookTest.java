@@ -16,7 +16,7 @@ class RookTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(rook.canMove(movement, Empty.getInstance())).isTrue();
+        assertThat(rook.canMove(movement)).isTrue();
     }
 
     @ParameterizedTest
@@ -25,6 +25,6 @@ class RookTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(rook.canMove(movement, Empty.getInstance())).isFalse();
+        assertThat(rook.canMove(movement)).isFalse();
     }
 }

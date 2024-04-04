@@ -16,7 +16,7 @@ class KingTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(king.canMove(movement, Empty.getInstance())).isTrue();
+        assertThat(king.canMove(movement)).isTrue();
     }
 
     @ParameterizedTest
@@ -25,6 +25,6 @@ class KingTest {
         Position source = Position.of(sourceFile, sourceRank);
         Position destination = Position.of(destinationFile, destinationRank);
         Movement movement = new Movement(source, destination);
-        assertThat(king.canMove(movement, Empty.getInstance())).isFalse();
+        assertThat(king.canMove(movement)).isFalse();
     }
 }

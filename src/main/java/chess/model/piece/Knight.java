@@ -28,15 +28,13 @@ public class Knight extends Piece {
 
     @Override
     public MovementAnalysis analyze(Movement movement, History history) {
-        validateCurrentColor(history);
         MovementValidator movementValidator = new MovementValidator(Collections.emptyMap());
         Map<Position, Piece> changes = getDefaultChanges(movement);
         return new MovementAnalysis(movementValidator, changes);
     }
 
     @Override
-    public boolean canMove(Movement movement, Piece target) {
-        validateTargetColor(target);
+    public boolean canMove(Movement movement) {
         int fileDistance = movement.getFileDistance();
         int rankDistance = movement.getRankDistance();
         return (fileDistance == LONG_MOVE_DISTANCE && rankDistance == SHORT_MOVE_DISTANCE)
