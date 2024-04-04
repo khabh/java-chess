@@ -55,14 +55,15 @@ public class King extends Piece {
         Position changedRookPosition = movement.getIntermediatePositions().get(0);
         Movement rookMove = new Movement(currentRookPosition, changedRookPosition);
         Map<Position, Piece> changes = getDefaultChanges(movement);
-        changes.putAll(getDefaultChanges(rookMove));
+        changes.put(currentRookPosition, Empty.getInstance());
+        changes.put(changedRookPosition, Rook.from(getColor()));
         return changes;
     }
 
     private MovementValidator getCastlingValidator(Movement movement) {
         Position rookPosition = getCastlingRook(movement);
-        List<Position> positions = new Movement(movement.getSource(), rookPosition)
-                .getIntermediatePositions();
+        Movement temp = new Movement(movement.getSource(), rookPosition);
+        List<Position> positions = temp.getIntermediatePositions();
         return MovementValidator.createWithEmptyColor(positions);
     }
 
@@ -73,7 +74,7 @@ public class King extends Piece {
         if (FileDirection.LEFT.match(movement)) {
             return Position.of(targetFile - 2, targetRank);
         }
-        return Position.of(targetFile + 1, targetFile);
+        return Position.of(targetFile + 1, targetRank);
     }
 
     @Override

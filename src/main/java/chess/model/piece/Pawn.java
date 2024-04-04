@@ -73,7 +73,7 @@ public class Pawn extends Piece {
             return false;
         }
         if (movement.isDiagonal()) {
-            return canMoveDiagonally(movement, target);
+            return canMoveDiagonally(movement);
         }
         return isValidVerticalMove(movement, target);
     }
@@ -82,9 +82,8 @@ public class Pawn extends Piece {
         return validRankDirection.match(movement);
     }
 
-    private boolean canMoveDiagonally(Movement movement, Piece target) {
-        boolean canAttack = hasOppositeColorWith(target);
-        return canAttack && movement.getRankDistance() == COMMON_RANK_DISTANCE;
+    private boolean canMoveDiagonally(Movement movement) {
+        return movement.getRankDistance() == COMMON_RANK_DISTANCE;
     }
 
     private boolean isValidVerticalMove(Movement movement, Piece target) {

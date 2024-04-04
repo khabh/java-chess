@@ -52,12 +52,8 @@ public abstract class Piece {
         return color.getOpposite();
     }
 
-    public boolean hasSameColorWith(Piece piece) {
-        return color == piece.color;
-    }
-
-    protected boolean hasOppositeColorWith(Piece piece) {
-        return color.getOpposite() == piece.color;
+    public Color getColor() {
+        return color;
     }
 
     public boolean isEmpty() {
